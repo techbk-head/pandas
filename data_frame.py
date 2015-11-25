@@ -20,4 +20,4 @@ def filter(log_name, dates_from, dates_finish):
 
 if __name__ == '__main__':
 #	read_log('nova')
-   filter('nova', '2015-11-23' , '2015-11-24')
+   filter('nova', '2015-11-1' , '2015-11-24')
