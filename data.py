@@ -1,35 +1,56 @@
-import pandas as pd 
+import pandas as pd
+import time
 import json
 path = {
 	'nova':('b','a')
 }
 
-def read_log(log_name): #Doc log cua cac file sau do roi convert ve dang dataframe  
+def detect_log_file(service_name):
+    list_file = []
+    #code tiep ...
+    return list_file
+
+def convert_time(log,time_unit):
+    if time_unit = 'second':
+        log['dates'] = pd.to_datetime(log['dates'], format='%Y-%m-%d %H:%M:%S')
+        time = time.strftime('%Y-%m-%d %H:%M:%S')
+    else:
+        if time_unit = 'minute':
+            time = time.strftime('%Y-%m-%d %H:%M:%S')
+        else:
+            if:
+            else:
+    return time
+
+
+def read_log_file(service_name): #Doc log cua cac file sau do roi convert ve dang dataframe  
     cols = ['dates', 'pid', 'level', 'prog', 'infor'] #Set columns for DataFrame
     log = pd.DataFrame()
-    for log_path in path[log_name]:
-    	rl = pd.read_csv(log_path, sep=',', names=cols) #Read file log and display to dataframe's format
-    	log.append(rl,ignore_index=True) #Ghep log cua ac file
-    sort = log.sort(['dates']) #sort time    
-    return (sort)
+    for log_file in path[service_name]:
+    	read_file = pd.read_csv(log_path, sep=',', names=cols) #Read file log and display to dataframe's format
+    	log.append(read_file,ignore_index=True) #Ghep log cua ac file
+    log = log.sort(['dates'],ascending=False) #sort time    
+    return log
 
-def filter(log_name, date_start, date_finish): #Filte Log theo thoi gian 
-	log = read_log(log_name)
-	abc = df[(df['dates'] >= date_start) & (df['dates'] <= date_finish)]
-	print (abc)
+def filter_log(service_name, date_start, date_finish): #Filte Log theo thoi gian 
+	log = read_log_file(service_name)
+	filtered_log = log[(log['dates'] >= date_start) & (log['dates'] <= date_finish)]
+	return filtered_log.to_json(orient="index")
 
-def print_dict(log_name):# Convert log tu dataframe ve dang format dictionary
-    myJSON = df.to_json(path_or_buf = None, orient = 'records', date_format = 'iso', double_precision = 10, force_ascii = True, date_unit = 'ms', default_handler = None) # Attempt 1
-    print (myJSON)
+def statistic_log(service_name, date_start, date_finish, time_unit): #Giong ham proc_to_statis nhung nhom roi count tong so value cua moi level vi du error:4 , infor =5 
+	log = filter_log(service_name, date_start, date_finish)
+    convert_time_log = convert_time(log,time_unit)
 
-
-def proc_to_statis(log_name): #Nhom log theo cot 
-    print (df.groupby(["dates", "level"]).count(numeric_only=True))
-    
-
-def statistic(log_name): #Giong ham proc_to_statis nhung nhom roi count tong so value cua moi level vi du error:4 , infor =5 
-	gr = pd.DataFrame({'count' : df.groupby( [ "dates", "level"] ).size()}).reset_index()
-	return (gr.to_json(orient='index')) 
+    count_per_level = pd.DataFrame({'count' : sort.groupby( [ "dates", "level"] ).size()}).reset_index()
+    sum_each = pd.DataFrame({'sum' : gr.groupby(["level"])["count"].sum()}).reset_index()
+    total = gr['count'].sum()
+    summary = {}
+    summary['Total'] = total
+    for index, col in sum_each.iterrows():
+        summary[col['level']] = col['sum']
+    abc = {}
+    abc['summary'] = summary
+    print (abc)
 
 if __name__ == '__main__':
 	grap_log('nova')
